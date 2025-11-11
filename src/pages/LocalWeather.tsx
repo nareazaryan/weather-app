@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import WeatherCard from "../components/WeatherCard";
-import { fetchWeather } from "../api/weatherApi";
 import type { WeatherData } from "../types/weatherTypes";
 
 export default function LocalWeather() {
@@ -12,20 +11,32 @@ export default function LocalWeather() {
       async (pos) => {
         const { latitude, longitude } = pos.coords;
         const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
-        const res = await fetch(url);
-        const data = await res.json();
-        setWeather(data);
+        try {
+          const res = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`
+          );
+          const data = await res.json();
+          if (data.cod === 200) setWeather(data);
+          else setError(data.message || "Failed to fetch weather");
+        } catch {
+          setError("Network error");
+        }
       },
-      () => setError("Unable to get location")
+      () => setError("Unable to get your location 😢")
     );
   }, []);
 
   return (
-    <div className="p-4 flex flex-col items-center">
-      <h1 className="text-2xl font-bold mb-4">Local Weather 🌤️</h1>
+    <div className="flex flex-col items-center text-gray-800">
+      <h1 className="text-3xl font-bold mb-4 text-white drop-shadow-md">
+        Local Weather 🌤️
+      </h1>
       {error && <p className="text-red-500">{error}</p>}
-      {weather && <WeatherCard data={weather} />}
+      {weather && (
+        <div className="mt-4 w-full max-w-md">
+          <WeatherCard data={weather} />
+        </div>
+      )}
     </div>
   );
 }

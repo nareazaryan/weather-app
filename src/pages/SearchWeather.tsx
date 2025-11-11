@@ -11,11 +11,16 @@ export default function SearchWeather() {
   const handleSearch = async (city: string) => {
     try {
       const data = await fetchWeather(city);
+      if (data.cod && data.cod !== 200) {
+        setError(data.message || "City not found");
+        setWeather(null);
+        return;
+      }
       setWeather(data);
       setError("");
       saveToHistory(city);
     } catch {
-      setError("City not found 😢");
+      setError("Network error");
     }
   };
 
@@ -28,11 +33,17 @@ export default function SearchWeather() {
   };
 
   return (
-    <div className="p-4 flex flex-col items-center">
-      <h1 className="text-2xl font-bold mb-4">Search Weather 🔍</h1>
+    <div className="flex flex-col items-center text-gray-800">
+      <h1 className="text-3xl font-bold mb-4 text-white drop-shadow-md">
+        Search Weather 🔍
+      </h1>
       <SearchBar onSearch={handleSearch} />
       {error && <p className="text-red-500">{error}</p>}
-      {weather && <WeatherCard data={weather} />}
+      {weather && (
+        <div className="mt-4 w-full max-w-md">
+          <WeatherCard data={weather} />
+        </div>
+      )}
     </div>
   );
 }
