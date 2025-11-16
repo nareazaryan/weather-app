@@ -20,9 +20,11 @@ export default function WeatherCard({ data }: Props) {
         </p>
       </div>
 
-      <div className="flex justify-center gap-6 mt-4 text-sm text-gray-600">
-        <span>💧 Humidity: {data.main.humidity}%</span>
-        <span>🌬️ Pressure: {data.main.pressure} hPa</span>
+      <div className="flex justify-center gap-6 mt-4 text-sm text-gray-800">
+        {/* <span>💧 Humidity: {data.main.humidity}% </span> 
+        <span>🌬️ Pressure: {data.main.pressure} hPa</span> */}
+        <span style={{ display: "block" }}>💧 Humidity: {data.main.humidity}%</span>
+        <span style={{ display: "block" }}>🌬️ Pressure: {data.main.pressure} hPa</span>
       </div>
     </div>
   );
